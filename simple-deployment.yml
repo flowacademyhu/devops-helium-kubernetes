@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-app-deployment
+  labels:
+    app: my-pod-label
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-pod-label
+  template:
+    metadata:
+      name: simple-pod
+      labels:
+        app: my-pod-label
+    spec:
+      containers:
+        - name: hello-app
+          image: gcr.io/google-samples/hello-app:1.0
+
