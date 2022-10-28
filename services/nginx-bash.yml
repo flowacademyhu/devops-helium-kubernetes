@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dns-caller
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-bash
+  template:
+    metadata:
+      labels:
+        app: nginx-bash
+    spec:
+      containers:
+        - name: hello-app
+          image: nginx

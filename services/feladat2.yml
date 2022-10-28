@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: masodik-feladat
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: masodik-feladat
+  namespace: masodik-feladat
+spec:
+  selector:
+    matchLabels:
+      almafa: my-pod-label
+  template:
+    metadata:
+      labels:
+        almafa: my-pod-label
+    spec:
+      containers:
+        - name: hello-app
+          image: gcr.io/google-samples/hello-app:1.0
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: feladat-service2
+  namespace: masodik-feladat
+spec:
+  type: NodePort
+  selector:
+    almafa: my-pod-label
+  ports:
+    - nodePort: 30000
+      targetPort: 8080
+      port: 80
