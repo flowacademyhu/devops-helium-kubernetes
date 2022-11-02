@@ -1,0 +1,52 @@
+# Memo: Ez nem futott le valakinél
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: asdasd
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gyakorlas
+  namespace: asdasd
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gyak-pods
+  template:
+    metadata:
+      labels:
+        app: gyak-pods
+    spec:
+      containers:
+        - name: gyak-container
+          image: gcr.io/google-samples/hello-app:1.0
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  namespace: asdasd
+  labels:
+    app: nginx-pod
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: feladat-service2
+  namespace: asdasd
+spec:
+  type: NodePort
+  selector:
+    app: gyak-pods
+  ports:
+    - nodePort: 31000
+      targetPort: 8080
+      port: 80
