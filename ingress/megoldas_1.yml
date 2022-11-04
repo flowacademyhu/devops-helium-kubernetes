@@ -1,0 +1,123 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feladat-dep-prefix
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: app-prefix
+    spec:
+      containers:
+        - name: hello-app
+          image: gcr.io/google-samples/hello-app:1.0
+          ports:
+            - containerPort: 8080
+  selector:
+    matchLabels:
+      app: app-prefix
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feladat-dep-exact
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: app-exact
+    spec:
+      containers:
+        - name: hello-app
+          image: gcr.io/google-samples/hello-app:1.0
+          ports:
+            - containerPort: 8080
+  selector:
+    matchLabels:
+      app: app-exact
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feladat-dep-default
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: app-default
+    spec:
+      containers:
+        - name: hello-app
+          image: gcr.io/google-samples/hello-app:1.0
+          ports:
+            - containerPort: 8080
+  selector:
+    matchLabels:
+      app: app-default
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: feladat-service-prefix
+spec:
+  selector:
+    app: app-prefix
+  ports:
+    - port: 35001
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: feladat-service-exact
+spec:
+  selector:
+    app: app-exact
+  ports:
+    - port: 35001
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: feladat-service-default
+spec:
+  selector:
+    app: app-default
+  ports:
+    - port: 35001
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: feladat-ingress
+spec:
+  defaultBackend:
+    service:
+      name: feladat-service-default
+      port:
+        number: 35001
+  rules:
+    - host: "prolikaja.hu"
+      http:
+        paths:
+          - path: "/prefix"
+            pathType: Prefix
+            backend:
+              service:
+                name: feladat-service-prefix
+                port:
+                  number: 35001
+    - http:
+        paths:
+          - path: "/exact"
+            pathType: Exact
+            backend:
+              service:
+                name: feladat-service-exact
+                port:
+                  number: 35001
