@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+spec:
+  type: NodePort
+  selector:
+    mysql: mysql
+  ports:
+    - port: 3306
+      targetPort: 3306
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      mysql: mysql
+  serviceName: mysql2
+  template:
+    metadata:
+      labels:
+        mysql: mysql
+    spec:
+      containers:
+        - name: saddadfasdfasdf
+          image: bitnami/mysql:latest
+          ports:
+            - containerPort: 3306
+          envFrom:
+            - secretRef:
+                name: mysql-secret
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+data:
+  MYSQL_ROOT_USER: Zmxvdw== # flow
+  MYSQL_ROOT_PASSWORD: Zmxvd19wdw== # flow_pw
+
+# mysql -h mysql-service.default.svc.cluster.local -P 3306 -u flow -p
+# mysql -h 172-17-0-3.default.pod.cluster.local -P 3306 -u flow -p
